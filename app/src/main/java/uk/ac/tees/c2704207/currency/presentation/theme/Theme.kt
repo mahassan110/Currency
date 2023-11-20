@@ -1,4 +1,4 @@
-package uk.ac.tees.c2704207.currency.ui.theme
+package uk.ac.tees.c2704207.currency.presentation.theme
 
 import android.app.Activity
 import android.os.Build
@@ -16,13 +16,14 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
+    primary = CustomOrange,
     secondary = PurpleGrey80,
     tertiary = Pink80
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
+    primary = CustomGray,
+    surfaceVariant = CustomGray,
     secondary = PurpleGrey40,
     tertiary = Pink40
 
@@ -57,8 +58,8 @@ fun CurrencyTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            window.statusBarColor = colorScheme.surface.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = true
         }
     }
 
