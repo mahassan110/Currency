@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -72,7 +73,52 @@ fun MainScreen() {
             fontWeight = FontWeight.Bold,
 
             )
+        Card(
+            modifier = Modifier.fillMaxWidth()
+        ){
+            Column(
+                modifier = Modifier
+                    //.fillMaxHeight()
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 4.dp),
+                //horizontalAlignment = ALignment.End
+            ){
+                CurrencyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    currencyCode = "PKR",
+                    currencyName = "Pakistani Ruppee",
+                    onDropDownIcon = {}
+                )
+                Text(
+
+                    text = "80.24",
+                    fontSize = 40.sp
+                )
+            }
+        }
     }
 }
 
 
+@Composable
+fun CurrencyRow(
+    modifier: Modifier = Modifier,
+    currencyCode : String,
+    currencyName :  String,
+    onDropDownIcon: () -> Unit
+){
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        Text(text = currencyCode, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+        IconButton(onClick = onDropDownIcon) {
+            Icon(
+                imageVector = Icons.Default.ArrowDropDown,
+                contentDescription = "open Bottom Sheet",
+            )
+        }
+        Spacer(modifier = Modifier.weight(1f))
+        Text(text = currencyName, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+    }
+}
