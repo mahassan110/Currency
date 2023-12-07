@@ -69,7 +69,7 @@ fun MainScreen() {
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp, vertical = 8.dp)
-#    ) {
+     ) {
         Text(
             modifier = Modifier.fillMaxWidth(1f),
             text = "Currency",
