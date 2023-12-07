@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.BottomSheetDefaults
@@ -37,6 +38,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -52,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 //import com.example.currency.R
 import kotlinx.coroutines.launch
+import uk.ac.tees.c2704207.currency.R
 
 fun column(any: Any?): Any {
     TODO("Not yet implemented")
@@ -59,13 +62,16 @@ fun column(any: Any?): Any {
 
 @Composable
 fun MainScreen() {
+
+    val keys = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "C")
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
+#    ) {
         Text(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxWidth(1f),
             text = "Currency",
             fontFamily = FontFamily.Cursive,
             fontSize = 35.sp,
@@ -73,29 +79,90 @@ fun MainScreen() {
             fontWeight = FontWeight.Bold,
 
             )
-        Card(
-            modifier = Modifier.fillMaxWidth()
+        Box (
+            contentAlignment = Alignment.CenterStart
         ){
-            Column(
-                modifier = Modifier
-                    //.fillMaxHeight()
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 4.dp),
-                //horizontalAlignment = ALignment.End
-            ){
-                CurrencyRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    currencyCode = "PKR",
-                    currencyName = "Pakistani Ruppee",
-                    onDropDownIcon = {}
-                )
-                Text(
+            Column {
+                Card(
+                    modifier = Modifier.fillMaxWidth()
+                ){
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 4.dp),
+                        horizontalAlignment = Alignment.End
+                    ){
+                        CurrencyRow(
+                            modifier = Modifier.fillMaxWidth(),
+                            currencyCode = "GBP",
+                            currencyName = "British pound",
+                            onDropDownIcon = {}
+                        )
+                        Text(
+                            text = "1",
+                            fontSize = 40.sp
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+                Card(
+                    modifier = Modifier.fillMaxWidth()
+                ){
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 4.dp),
+                        horizontalAlignment = Alignment.End
+                    ){
+                        Text(
+                            text = "305.5",
+                            fontSize = 40.sp
+                        )
+                        CurrencyRow(
+                            modifier = Modifier.fillMaxWidth(),
+                            currencyCode = "PKR",
+                            currencyName = "Pakistani Ruppee",
+                            onDropDownIcon = {}
+                        )
 
-                    text = "80.24",
-                    fontSize = 40.sp
+                    }
+                }
+            }
+            Box (
+                modifier = Modifier
+                    .padding(start = 40.dp)
+                    .clip(CircleShape)
+                    .clickable { }
+                    .background(color = MaterialTheme.colorScheme.background)
+            ){
+                Icon(
+                    painter = painterResource(R.drawable.icon_sync),
+                    contentDescription = "Currency",
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .size(25.dp),
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
+
             }
         }
+        LazyVerticalGrid(
+            modifier = Modifier.padding(horizontal = 35.dp),
+            columns = GridCells.Fixed(3)
+        ){
+            items(keys){key ->
+                KeyboardButton(
+                    modifier = Modifier.aspectRatio(1f),
+                    key = key,
+                    backgroundColor = if (key == "C") MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.surfaceVariant,
+                    onClick = {}
+                )
+
+            }
+
+        }
+
     }
 }
 
@@ -114,11 +181,28 @@ fun CurrencyRow(
         Text(text = currencyCode, fontSize = 14.sp, fontWeight = FontWeight.Bold)
         IconButton(onClick = onDropDownIcon) {
             Icon(
-                imageVector = Icons.Default.ArrowDropDown,
-                contentDescription = "open Bottom Sheet",
+                imageVector = Icons.Default.ArrowDropDown, contentDescription = "open Bottom Sheet"
             )
         }
         Spacer(modifier = Modifier.weight(1f))
         Text(text = currencyName, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+    }
+}
+@Composable
+fun KeyboardButton(
+    modifier: Modifier = Modifier,
+    key: String,
+    backgroundColor: Color,
+    onClick: (String) -> Unit
+) {
+    Box(
+        modifier = modifier
+            .padding(8.dp)
+            .clip(CircleShape)
+            .background(color = backgroundColor)
+            .clickable { onClick(key) },
+        contentAlignment = Alignment.Center
+    ) {
+        Text(text = key, fontSize = 32.sp)
     }
 }
