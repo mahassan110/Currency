@@ -4,7 +4,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 import uk.ac.tees.c2704207.currency.data.remote.DataTransfer.CurrencyDataTransfer
 
-interface currentAPI{
+interface currenyAPI{
 
     @GET("v1/latest")
         suspend fun getLatestRates(
