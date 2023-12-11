@@ -1,6 +1,6 @@
 package uk.ac.tees.c2704207.currency.domain.model
 
-data class currencyRate(
+data class CurrencyRate(
 
     val code : String,
     val name : String,

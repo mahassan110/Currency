@@ -1,9 +1,9 @@
 package uk.ac.tees.c2704207.currency.data.local.entity
 
-import uk.ac.tees.c2704207.currency.domain.model.currencyRate
+import uk.ac.tees.c2704207.currency.domain.model.CurrencyRate
 
-fun currencyRateEntity.toCurrencyRate(): currencyRate{
-    return currencyRate(
+fun currencyRateEntity.toCurrencyRate(): CurrencyRate{
+    return CurrencyRate(
 
         code = code,
         name = name,
@@ -13,7 +13,7 @@ fun currencyRateEntity.toCurrencyRate(): currencyRate{
 
 
 }
-fun currencyRate.toCurrencyRateEntity(): currencyRateEntity {
+fun CurrencyRate.toCurrencyRateEntity(): currencyRateEntity {
     return currencyRateEntity(
 
         code = code,

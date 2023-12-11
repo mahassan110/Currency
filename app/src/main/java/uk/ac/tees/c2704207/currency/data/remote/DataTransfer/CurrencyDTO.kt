@@ -1,5 +1,5 @@
 package uk.ac.tees.c2704207.currency.data.remote.DataTransfer
 
-data class currencyRates(
+data class CurrencyDTO(
     val data: CurrencyDataTransfer
 )

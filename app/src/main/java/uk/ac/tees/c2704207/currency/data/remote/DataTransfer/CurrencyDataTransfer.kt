@@ -32,6 +32,6 @@ data class CurrencyDataTransfer(
     val SGD: Double,
     val THB: Double,
     val TRY: Double,
-    val USD: Int,
+    val USD: Double,
     val ZAR: Double
 )
