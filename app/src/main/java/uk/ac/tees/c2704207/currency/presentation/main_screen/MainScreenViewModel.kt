@@ -5,16 +5,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import uk.ac.tees.c2704207.currency.domain.model.resource
-import uk.ac.tees.c2704207.currency.domain.repository.currencyRepository
+import uk.ac.tees.c2704207.currency.domain.model.Resource
+import uk.ac.tees.c2704207.currency.domain.repository.CurrencyRepository
 import java.text.DecimalFormat
+import javax.inject.Inject
 
-class MainScreenViewModelViewModel(
-
-    private val repository: currencyRepository
+@HiltViewModel
+class MainScreenViewModel @Inject constructor(
+    private val repository: CurrencyRepository
 
 ): ViewModel() {
 
@@ -24,14 +25,17 @@ class MainScreenViewModelViewModel(
         getCurrencyRatesList()
     }
 
-    fun onEvent(events: MainScreenEvents){
+    fun onEvent(event: MainScreenEvents){
 
-        when(events){
+        when(event){
 
             is MainScreenEvents.BottomSheetItemClicked -> {
-
-                updateCurrencyValue(value = events.value)
-
+                if (state.selection == SelectionState.FROM) {
+                    state = state.copy(fromCurrencyCode = event.value)
+                } else if (state.selection == SelectionState.TO) {
+                    state = state.copy(toCurrencyCode = event.value)
+                }
+                updateCurrencyValue("")
             }
             MainScreenEvents.FromCurrencySelect -> {
 
@@ -40,7 +44,7 @@ class MainScreenViewModelViewModel(
             }
             is MainScreenEvents.NumberButtomClicked -> {
 
-
+                updateCurrencyValue(value = event.value)
 
             }
             MainScreenEvents.SwapIconClicked -> {
@@ -69,10 +73,10 @@ class MainScreenViewModelViewModel(
         viewModelScope.launch {
 
             repository
-                .getCurrencyRateList()
+                .getCurrencyRatesList()
                 .collectLatest { result ->
                     when(result){
-                        is resource.Error -> {
+                        is Resource.Error -> {
                             state = state.copy(
 
                                 currencyRates = result.data?.associateBy { it.code } ?: emptyMap(),
@@ -81,7 +85,7 @@ class MainScreenViewModelViewModel(
                             )
 
                         }
-                        is resource.Success -> {
+                        is Resource.Success -> {
 
                             state = state.copy(
 
@@ -107,8 +111,8 @@ class MainScreenViewModelViewModel(
 
             }
 
-            val fromCurrencyRate = state.currencyRates[state.fromCurrencyValue]?.rate ?: 0.0
-            val toCurrenyRate = state.currencyRates[state.toCurrencyValue]?.rate ?: 0.0
+            val fromCurrencyRate = state.currencyRates[state.fromCurrencyCode]?.rate ?: 0.0
+            val toCurrenyRate = state.currencyRates[state.toCurrencyCode]?.rate ?: 0.0
 
 
             val updatedCurrencyValue = when(value){
@@ -123,15 +127,23 @@ class MainScreenViewModelViewModel(
             when(state.selection){
 
                 SelectionState.FROM->{
+                    val fromValue = updatedCurrencyValue.toDoubleOrNull() ?: 0.0
+                    val toValue = fromValue / fromCurrencyRate * toCurrenyRate
+                    state = state.copy(
+
+                        fromCurrencyValue = updatedCurrencyValue,
+                        toCurrencyValue = numberFormat.format(toValue)
+                    )
+                }
+                SelectionState.TO ->{
+
                     val toValue = updatedCurrencyValue.toDoubleOrNull() ?: 0.0
                     val fromValue = toValue / toCurrenyRate * fromCurrencyRate
                     state = state.copy(
 
-                        fromCurrencyValue = updatedCurrencyValue,
-                        toCurrencyValue = numberFormat.format(fromValue)
+                        toCurrencyValue = updatedCurrencyValue,
+                        fromCurrencyValue = numberFormat.format(fromValue)
                     )
-                }
-                SelectionState.TO ->{
 
                 }
             }

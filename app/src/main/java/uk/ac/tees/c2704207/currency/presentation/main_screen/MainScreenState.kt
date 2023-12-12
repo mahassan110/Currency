@@ -1,7 +1,6 @@
 package uk.ac.tees.c2704207.currency.presentation.main_screen
 
 import uk.ac.tees.c2704207.currency.domain.model.CurrencyRate
-import uk.ac.tees.c2704207.currency.domain.model.resource
 
 data class MainScreenState(
 

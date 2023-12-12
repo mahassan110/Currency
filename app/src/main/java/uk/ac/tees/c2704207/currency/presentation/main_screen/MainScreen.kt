@@ -1,5 +1,6 @@
 package uk.ac.tees.c2704207.currency.presentation.main_screen
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -60,6 +61,7 @@ fun column(any: Any?): Any {
     TODO("Not yet implemented")
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
 
@@ -70,6 +72,63 @@ fun MainScreen(
 ) {
 
     val keys = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "C")
+
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = state.error){
+
+        if (state.error != null){
+
+            Toast.makeText(context, state.error, Toast.LENGTH_LONG).show()
+
+        }
+
+    }
+
+    val scope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState()
+    var shouldBottomSheetShow by remember { mutableStateOf(false) }
+
+
+    if (shouldBottomSheetShow){
+        ModalBottomSheet(
+            sheetState = sheetState,
+            onDismissRequest = { shouldBottomSheetShow = false },
+            dragHandle = {
+                        Column (
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+
+                        ){
+
+                            BottomSheetDefaults.DragHandle()
+                            Text(
+                                text = "Select Currency",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Divider()
+                            
+                        }
+
+            } ,
+            content = {
+                BottomSheetContent(
+                    onItemClicked = {currencyCode ->
+                        onEvents(MainScreenEvents.BottomSheetItemClicked(currencyCode))
+                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+                            if (!sheetState.isVisible) shouldBottomSheetShow = false
+                        }
+                    } ,
+                    currenciesList = state.currencyRates.values.toList()
+                )
+
+
+            }
+        )
+        
+    }
 
     Column(
         modifier = Modifier
@@ -102,16 +161,25 @@ fun MainScreen(
                             modifier = Modifier.fillMaxWidth(),
                             currencyCode = state.fromCurrencyCode,
                             currencyName = state.currencyRates[state.fromCurrencyCode]?.name ?: "",
-                            onDropDownIcon = {}
+                            onDropDownIcon = {
+                                shouldBottomSheetShow = true
+                                onEvents(MainScreenEvents.FromCurrencySelect)
+                            }
                         )
                         Text(
                             text = state.fromCurrencyValue,
                             fontSize = 40.sp,
-                            modifier = Modifier.clickable {
+                            modifier = Modifier.clickable (
 
-                                onEvents(MainScreenEvents.FromCurrencySelect)
+                                interactionSource = MutableInteractionSource(),
+                                indication = null,
+                                onClick = {onEvents(MainScreenEvents.FromCurrencySelect) }
 
-                            }
+                            ),
+                            color = if (state.selection == SelectionState.FROM){
+                                MaterialTheme.colorScheme.primary
+
+                            }else MaterialTheme.colorScheme.onSurface
 
                         )
                     }
@@ -129,18 +197,28 @@ fun MainScreen(
                         Text(
                             text = state.fromCurrencyValue,
                             fontSize = 40.sp,
-                            modifier = Modifier.clickable {
+                            modifier = Modifier.clickable (
 
-                                onEvents(MainScreenEvents.FromCurrencySelect)
+                                interactionSource = MutableInteractionSource(),
+                                indication = null,
+                                onClick = {onEvents(MainScreenEvents.ToCurrencySelect) }
 
-                            }
+                            ),
+                            color = if (state.selection == SelectionState.TO){
+                                MaterialTheme.colorScheme.primary
+
+                            }else MaterialTheme.colorScheme.onSurface
+
 
                         )
                         CurrencyRow(
                             modifier = Modifier.fillMaxWidth(),
                             currencyCode = state.fromCurrencyCode,
                             currencyName = state.currencyRates[state.toCurrencyCode]?.name ?: "",
-                            onDropDownIcon = {}
+                            onDropDownIcon = {
+                                shouldBottomSheetShow = true
+                                onEvents(MainScreenEvents.ToCurrencySelect)
+                            }
                         )
 
                     }
