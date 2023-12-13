@@ -195,7 +195,7 @@ fun MainScreen(
                         horizontalAlignment = Alignment.End
                     ){
                         Text(
-                            text = state.fromCurrencyValue,
+                            text = state.toCurrencyValue,
                             fontSize = 40.sp,
                             modifier = Modifier.clickable (
 
@@ -213,7 +213,7 @@ fun MainScreen(
                         )
                         CurrencyRow(
                             modifier = Modifier.fillMaxWidth(),
-                            currencyCode = state.fromCurrencyCode,
+                            currencyCode = state.toCurrencyCode,
                             currencyName = state.currencyRates[state.toCurrencyCode]?.name ?: "",
                             onDropDownIcon = {
                                 shouldBottomSheetShow = true

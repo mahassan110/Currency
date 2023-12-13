@@ -25,7 +25,7 @@ fun BottomSheetContent(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onItemClicked(currency.name) }
+                    .clickable { onItemClicked(currency.code) }
                     .padding(vertical = 4.dp, horizontal = 16.dp)
             ) {
                 Text(text = "${currency.code}: ${currency.name}")
