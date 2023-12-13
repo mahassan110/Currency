@@ -2,4 +2,11 @@
 <resources>
 
     <style name="Theme.Currency" parent="android:Theme.Material.Light.NoActionBar" />
+    
+    
+    <style name="Theme.App.SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/blue</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/currencylogo</item>
+        <item name="postSplashScreenTheme">@style/Theme.Currency</item>
+    </style>
 </resources>
